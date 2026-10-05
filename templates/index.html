@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Azure Cloud File Storage</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1050px;
+            margin: 40px auto;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, #0078d4, #2563eb);
+            color: white;
+            padding: 35px;
+            border-radius: 22px;
+            box-shadow: 0 12px 35px rgba(37, 99, 235, 0.20);
+            margin-bottom: 25px;
+        }
+
+        .cloud-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.30);
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            opacity: 0.92;
+            line-height: 1.6;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+            border: 1px solid #e8edf5;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 21px;
+            margin-bottom: 6px;
+            color: #111827;
+        }
+
+        .card-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #b8c7dc;
+            border-radius: 15px;
+            padding: 28px;
+            text-align: center;
+            background: #f8fbff;
+            transition: 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #0078d4;
+            background: #f2f8ff;
+        }
+
+        .upload-icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #475467;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 16px;
+            padding: 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        input[type="file"]:hover {
+            border-color: #0078d4;
+        }
+
+        /* Buttons */
+        button,
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 9px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .primary {
+            background: #0078d4;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #005ea8;
+            transform: translateY(-1px);
+        }
+
+        .download {
+            background: #e8f3ff;
+            color: #0067b8;
+        }
+
+        .download:hover {
+            background: #d5eaff;
+        }
+
+        .delete {
+            background: #fff0ef;
+            color: #c43225;
+        }
+
+        .delete:hover {
+            background: #ffe0dd;
+        }
+
+        /* File table */
+        .file-count {
+            display: inline-block;
+            background: #eef4ff;
+            color: #3538cd;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            text-align: left;
+            padding: 13px 12px;
+            color: #667085;
+            font-size: 13px;
+            border-bottom: 2px solid #eaecf0;
+            background: #fafbfc;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eaecf0;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .file-icon {
+            display: inline-flex;
+            width: 34px;
+            height: 34px;
+            align-items: center;
+            justify-content: center;
+            background: #eef6ff;
+            border-radius: 8px;
+            margin-right: 9px;
+            vertical-align: middle;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #667085;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .empty h3 {
+            color: #344054;
+            margin-bottom: 7px;
+        }
+
+        .empty p {
+            font-size: 14px;
+        }
+
+        /* Flash messages */
+        .flash {
+            padding: 13px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .success {
+            background: #ecfdf3;
+            color: #027a48;
+            border: 1px solid #abefc6;
+        }
+
+        .error {
+            background: #fef3f2;
+            color: #b42318;
+            border: 1px solid #fecdca;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 10px 0 25px;
+            color: #98a2b3;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .hero {
+                padding: 25px;
+            }
+
+            .hero h1 {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .actions .btn,
+            .actions button {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="hero">
+        <div class="cloud-badge">☁️ AZURE BLOB STORAGE</div>
+
+        <h1>Cloud File Storage System</h1>
+
+        <p>
+            Securely upload, store, download and manage your files
+            using cloud storage technology.
+        </p>
+    </div>
+
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <!-- Upload Section -->
+    <div class="card">
+
+        <div class="card-header">
+            <h2>📤 Upload a File</h2>
+            <p>
+                Select a file from your computer and upload it to Azure Cloud Storage.
+            </p>
+        </div>
+
+        <div class="upload-area">
+
+            <div class="upload-icon">☁️</div>
+
+            <div class="upload-text">
+                Choose a file to securely store it in the cloud.
+            </div>
+
+            <form action="/upload"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <input
+                    type="file"
+                    name="file"
+                    required
+                >
+
+                <button
+                    class="primary"
+                    type="submit">
+                    ☁️ Upload to Cloud
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Files Section -->
+    <div class="card">
+
+        <div class="card-header">
+
+            <h2>
+                📁 Files in Cloud Storage
+
+                {% if files %}
+                    <span class="file-count">
+                        {{ files|length }} file{% if files|length != 1 %}s{% endif %}
+                    </span>
+                {% endif %}
+
+            </h2>
+
+            <p>
+                Files currently stored in your Azure Blob Storage container.
+            </p>
+
+        </div>
+
+
+        {% if files %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>File Name</th>
+                        <th>Size</th>
+                        <th>Uploaded</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for file in files %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="file-icon">📄</span>
+
+                            <span class="file-name">
+                                {{ file.name }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {{ file.size }}
+                        </td>
+
+
+                        <td>
+                            {{ file.created }}
+                        </td>
+
+
+                        <td>
+
+                            <div class="actions">
+
+                                <a
+                                    class="btn download"
+                                    href="/download/{{ file.name }}">
+                                    ⬇ Download
+                                </a>
+
+
+                                <form
+                                    action="/delete/{{ file.name }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this file?');">
+
+                                    <button
+                                        class="delete"
+                                        type="submit">
+                                        🗑 Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                <div class="empty-icon">📂</div>
+
+                <h3>No files uploaded yet</h3>
+
+                <p>
+                    Upload your first file above and it will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Footer -->
+    <div class="footer">
+        ☁️ Cloud-Based File Storage System
+        <br>
+        Powered by Microsoft Azure Blob Storage
+    </div>
+
+</div>
+
+</body>
+</html>
