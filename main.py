@@ -20,12 +20,16 @@ if os.environ.get("WEBSITE_INSTANCE_ID") and not secret_key:
     raise RuntimeError("SECRET_KEY must be configured in Azure.")
 
 app.secret_key = secret_key or "local-development-only-change-me"
+
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
-    # HTTPS is used on Azure; keep this enabled in production.
-    SESSION_COOKIE_SECURE=os.environ.get("FLASK_ENV") == "production",
+    SESSION_COOKIE_SECURE=(
+        bool(os.environ.get("WEBSITE_INSTANCE_ID"))
+        or os.environ.get("FLASK_ENV") == "production"
+    ),
 )
+
 
 AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
 CONTAINER_NAME = os.environ.get("CONTAINER_NAME", "uploads")
