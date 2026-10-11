@@ -13,11 +13,13 @@ from werkzeug.utils import secure_filename
 from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY")
-if not app.secret_key:
-    # Suitable for local testing only. Set SECRET_KEY in Azure App Service settings.
-    app.secret_key = "local-development-only-change-me"
 
+secret_key = os.environ.get("SECRET_KEY")
+
+if os.environ.get("WEBSITE_INSTANCE_ID") and not secret_key:
+    raise RuntimeError("SECRET_KEY must be configured in Azure.")
+
+app.secret_key = secret_key or "local-development-only-change-me"
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
