@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register | Azure Cloud Files</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;font-family:"Segoe UI",Arial,sans-serif;background:linear-gradient(135deg,#eef4ff,#f8fbff);color:#1f2937}
+    .panel{width:100%;max-width:430px;background:white;padding:34px;border-radius:22px;border:1px solid #e8edf5;box-shadow:0 12px 35px #2563eb1c}
+    .icon{font-size:38px}.eyebrow{color:#0078d4;font-size:12px;font-weight:700;letter-spacing:1px;margin-top:12px}
+    h1{margin:8px 0;font-size:28px}p{color:#667085;line-height:1.5}
+    label{display:block;font-size:14px;font-weight:600;margin:16px 0 7px}
+    input{width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:10px;font:inherit}
+    button{width:100%;border:0;border-radius:10px;padding:13px;background:#0078d4;color:white;font-weight:700;font-size:15px;margin-top:22px;cursor:pointer}
+    button:hover{background:#005ea8}.link{text-align:center;margin-top:20px;font-size:14px}.link a{color:#0067b8;font-weight:600;text-decoration:none}
+    .flash{padding:12px;border-radius:9px;margin:12px 0;font-size:14px}.success{background:#ecfdf3;color:#027a48}.error{background:#fef3f2;color:#b42318}
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <div class="icon">☁️</div><div class="eyebrow">AZURE BLOB STORAGE</div>
+    <h1>Create your account</h1><p>Register to start managing your cloud files.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('register') }}">
+      <label for="email">Email address</label>
+      <input id="email" type="email" name="email" autocomplete="email" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" minlength="8" autocomplete="new-password" required>
+      <label for="confirm_password">Confirm password</label>
+      <input id="confirm_password" type="password" name="confirm_password" minlength="8" autocomplete="new-password" required>
+      <button type="submit">Create account</button>
+    </form>
+    <div class="link">Already registered? <a href="{{ url_for('login') }}">Log in</a></div>
+  </main>
+</body>
+</html>
